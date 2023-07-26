@@ -4,17 +4,21 @@ import Home from "./pages/Home.tsx";
 import Signin from "./pages/Signin.tsx";
 import Signup from "./pages/Signup.tsx";
 import Profile from "./pages/Profile.tsx";
-import Header from "./components/Header.tsx";
-
+import Feed from "./components/Feed/feed.tsx";
+import { ToastContainer } from "react-toastify";
+import Header from "./components/Header/Header.tsx";
 function App() {
   return (
     <>
       <Routes>
         <Route path="/signin" element={<Signin />} />
         <Route path="/" element={<Signup />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/header" element={<Header />} />
+        <Route path="/" element={<Header />}>
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/feed" element={<Feed />} />
+        </Route>
       </Routes>
+      <ToastContainer />
     </>
   );
 }

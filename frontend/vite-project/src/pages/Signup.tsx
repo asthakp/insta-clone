@@ -3,41 +3,45 @@ import Phone from "../images/mbl.png";
 import Logo from "../images/Instagram.png";
 import GooglePlay from "../images/google-play.png";
 import Microsoft from "../images/microsoft.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { postData } from "../service/axios.service";
+import { errorToast, successToast } from "../service/toastify.service";
 
 const Signup = () => {
   const [disabled, setDisabled] = useState(true);
-  const [values, setValues] = useState({
-    mobileOrEmail: "",
-    fullName: "",
-    userName: "",
-    password: "",
-  });
+  const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleChange = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const { name, value } = e.target;
-    setValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    console.log(values);
+    const data = {
+      email,
+      fullName,
+      userName,
+      password,
+    };
+    const response = await postData("users/register", data);
+    if (response.status) {
+      successToast(response.mesage);
+      navigate("/signin");
+    } else {
+      errorToast(response.message);
+    }
   };
 
   useEffect(() => {
     // Validate each input field individually
     const isAnyValueEmpty =
-      values.mobileOrEmail.trim() === "" ||
-      values.fullName.trim() === "" ||
-      values.userName.trim() === "" ||
-      values.password.trim() === "";
+      email.trim() === "" ||
+      fullName.trim() === "" ||
+      userName.trim() === "" ||
+      password.trim() === "";
 
     setDisabled(isAnyValueEmpty);
-  }, [values]);
+  }, [email, fullName, userName, password]);
 
   return (
     <>
@@ -61,37 +65,34 @@ const Signup = () => {
               </p>
               <span className=" bg-gray-300 w-24 h-[1px]"></span>
             </div>
+
             <div className="my-4 flex flex-col gap-1">
               <input
                 type="text"
-                placeholder="Mobile Number or Email"
-                name="mobileOrEmail"
-                value={values.mobileOrEmail}
-                onChange={(e) => handleChange(e)}
+                placeholder="Email"
+                name="email"
+                onChange={(e) => setEmail(e.target.value)}
                 className="border border-gray-300 text-sm bg-[rgb(250,250,250)] h-9 outline-slate-400 px-2 rounded"
               />
               <input
                 type="text"
                 placeholder="Fullname"
                 name="fullName"
-                value={values.fullName}
-                onChange={(e) => handleChange(e)}
+                onChange={(e) => setFullName(e.target.value)}
                 className="border border-gray-300 text-sm bg-[rgb(250,250,250)] h-9  outline-slate-400 px-2 rounded"
               />
               <input
                 type="text"
                 placeholder="Username"
                 name="userName"
-                value={values.userName}
-                onChange={(e) => handleChange(e)}
+                onChange={(e) => setUserName(e.target.value)}
                 className="border border-gray-300 text-sm bg-[rgb(250,250,250)] h-9  outline-slate-400 px-2 rounded"
               />
               <input
                 type="password"
                 placeholder="password"
                 name="password"
-                value={values.password}
-                onChange={(e) => handleChange(e)}
+                onChange={(e) => setPassword(e.target.value)}
                 className="border border-gray-300 text-sm bg-[rgb(250,250,250)] h-9  outline-slate-400 px-2 rounded"
               />
             </div>

@@ -1,38 +1,39 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import GooglePlay from "../images/google-play.png";
 import Microsoft from "../images/microsoft.png";
 import Logo from "../images/Instagram.png";
 import { useEffect, useState } from "react";
+import { postData } from "../service/axios.service";
+import { errorToast, successToast } from "../service/toastify.service";
 
 const Signin = () => {
   const [disabled, setDisabled] = useState(true);
-  const [values, setValues] = useState({
-    mobileUsernameOrEmail: "",
-    password: "",
-  });
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleChange = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const { name, value } = e.target;
-    setValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    console.log(values);
+    const data = {
+      userName,
+      password,
+    };
+    const response = await postData("users/login", data);
+    if (response.status) {
+      successToast(response.message);
+      navigate("/feed");
+    } else {
+      errorToast(response.message);
+    }
   };
 
   useEffect(() => {
     // Validate each input field individually
-    const isAnyValueEmpty =
-      values.mobileUsernameOrEmail.trim() === "" ||
-      values.password.trim() === "";
+    const isAnyValueEmpty = userName.trim() === "" || password.trim() === "";
 
     setDisabled(isAnyValueEmpty);
-  }, [values]);
+  }, [userName, password]);
+
   return (
     <div className="flex justify-center text-center">
       <div className="flex flex-col gap-[10px] text-center mt-11 ">
@@ -45,18 +46,16 @@ const Signin = () => {
           <div className="my-4 flex flex-col gap-1">
             <input
               type="text"
-              placeholder="Phone Number, Username or Email"
-              name="mobileUsernameOrEmail"
-              value={values.mobileUsernameOrEmail}
-              onChange={(e) => handleChange(e)}
+              placeholder="Username "
+              name="userName"
+              onChange={(e) => setUserName(e.target.value)}
               className="border border-gray-300 text-sm bg-[rgb(250,250,250)] h-9 outline-slate-400 px-2 rounded"
             />
             <input
               type="password"
               placeholder="Password"
               name="password"
-              value={values.password}
-              onChange={(e) => handleChange(e)}
+              onChange={(e) => setPassword(e.target.value)}
               className="border border-gray-300 text-sm bg-[rgb(250,250,250)] h-9  outline-slate-400 px-2 rounded"
             />
           </div>
