@@ -38,14 +38,18 @@ const userSchema = new mongoose.Schema<UserInterface>(
   }
 );
 
-userSchema.pre("save", async function () {
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-});
+// userSchema.pre("save", async function(){
+//   try {
+//     const salt=await bcrypt.genSalt(10)
+//     this.password=await bcrypt.hash(this.password, salt)
+//   } catch (error) {
 
-userSchema.methods.matchPassword = async function (password: any) {
-  return bcrypt.compare(password, this.password);
-};
+//   }
+// })
+
+// userSchema.methods.matchPassword = async function (password: string) {
+//   return bcrypt.compare(password, this.password);
+// };
 
 const User = mongoose.model<UserInterface>("User", userSchema);
 

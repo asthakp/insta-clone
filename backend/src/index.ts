@@ -19,7 +19,7 @@ app.use(mongoSanitize());
 app.use(helmet());
 app.use(hpp());
 
-app.use("/", indexRouter);
+app.use(indexRouter);
 
 //error handling for unmatched routes
 interface CustomError extends Error {
@@ -41,7 +41,7 @@ app.use(
   }
 );
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
   console.log("server is running at port ", PORT);

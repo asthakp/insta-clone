@@ -3,9 +3,12 @@ import User from "../model/user.model";
 import jwt from "jsonwebtoken";
 
 export const registerUser = async (req: Request, res: Response) => {
+  console.log("hello");
   try {
     const { email, userName } = req.body;
+    console.log(req.body);
     const isUser = await User.findOne({ $or: [{ email }, { userName }] });
+    console.log(isUser);
     if (isUser) {
       return res.status(401).json({
         status: false,
@@ -20,6 +23,7 @@ export const registerUser = async (req: Request, res: Response) => {
       });
     }
   } catch (error: any) {
+    console.log(error);
     res.status(500).json({
       status: false,
       error: error.message,
